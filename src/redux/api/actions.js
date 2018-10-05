@@ -1,5 +1,4 @@
 import types from './actionType';
-import {}
 export const setUser = param => ({
 	type: types.SET_USER,
 	payload: param
@@ -16,6 +15,6 @@ export const getOpenContext = object => {
 		payload: object
 	};
 	return dispatch => {
-		dispatch()
-	}
+		dispatch();
+	};
 };

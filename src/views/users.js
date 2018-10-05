@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Graph from '@components/statefull/Graph';
+import Graph from '@components/statefull/d3Graph';
 
 const styles = theme => ({
 	root: {
@@ -32,6 +32,12 @@ export class users extends Component {
 				alignItems="center">
 				<Grid item xs={5}>
 					<Paper className={classes.paper}>
+						<svg
+							id="test"
+							viewBox="0 0 900 600"
+							width={(window.screen.width / 12) * 5}
+							height="600"
+						/>
 						<Graph />
 					</Paper>
 				</Grid>

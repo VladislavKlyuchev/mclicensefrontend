@@ -58,7 +58,8 @@ export class Graph extends Component {
 		this.state = {};
 	}
 	render() {
-		let { nodes, links } = this.props;
+		let nodes = [{ id: 'Node1' }, { id: 'Node2' }, { id: 'Node3' }];
+		let links = [];
 		nodes[0].id = 'GA ' + nodes[0].id;
 		const someData = { nodes, links };
 		// graph event callbacks
