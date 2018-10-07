@@ -6,11 +6,192 @@ import { Divider } from 'semantic-ui-react';
 
 export class d3Graph extends Component {
 	static propTypes = {};
+	constructor(props) {
+		super(props)
+		this.state = {
+			graphRef: React.createRef()
+		}
+	} 
 	componentDidMount() {
-		graph.nodes[0].id = graph.nodes[0].id;
 
-		var svg = d3.select('svg#test'),
-			width = +svg.attr('width'),
+		function getArrayFromTree(object) {
+			let array = [];
+		  array.push(object);
+			if(object.children && object.children.length > 0) {
+			  for(let i = 0 ;i < object.children.length; i++) {
+				array = array.concat(getArrayFromTree(object.children[i]))
+			}
+		  }
+		  return array
+		}
+		function findLinks(objectT) {
+			let array = [];
+			if(objectT.targets && objectT.targets.length > 0) {
+			  objectT.targets.forEach(el => {
+				const obj = { source: objectT.id, target: el}
+			  array.push(obj)
+			})
+		  }
+		  if(objectT.children && objectT.children.length > 0) {
+			   objectT.children.forEach(el =>  {
+				var tmpArray = findLinks(el);
+			  array.push(tmpArray.flat());
+			})
+		  }
+		  return array.flat()
+		}
+		
+		function searchTree(element, matchingTitle){
+			if(element.id == matchingTitle){
+				 return element;
+			}else if (element.children != null){
+				 var i;
+				 var result = null;
+				 for(i=0; result == null && i < element.children.length; i++){
+					  result = searchTree(element.children[i], matchingTitle);
+				 }
+				 return result;
+			}
+			return null;
+		}
+		function findTargets(objectT) {
+			let array = [];
+			if(objectT.targets && objectT.targets.length > 0) {
+			  objectT.targets.forEach(el => {
+			  array.push(el)
+			})
+		  }
+		  if(objectT.children && objectT.children.length > 0) {
+			   objectT.children.forEach(el =>  {
+				var tmpArray = findTargets(el);
+			  array.push(tmpArray.flat());
+			})
+		  }
+		  return array.flat()
+		}
+		function unicueArray(array, newArray ) {
+			let result = [];
+			for(var i = 0; i < newArray.length ; i++ ) {
+			  var is = false;
+			  for(let k = 0; k < array.length; k++) {
+				if(array[k].id === newArray[i].id)  {
+				  is = true
+			  }
+			}
+			if(!is) result.push(newArray[i]) 
+		  }
+		  return array.concat(result)
+		}
+		var exampleTree = {
+			id: 'Vasya',
+		  children: [
+			  {
+				id: 'Nastya',
+			  children: [ 
+				  {
+					id: 'Pasha',
+				  children: [
+					  {
+						id: 'Givi'
+					},
+					{
+						id: 'Yes',
+					  targets: ['Sonya']
+					}
+				  ]
+				}
+			  ]
+			},
+			
+			{
+				id: 'Sonya',
+			  children: [
+				  {
+					id: 'Katya',
+				  children: [
+					  {
+						id:'Vova'
+					},
+					{
+						id: 'Pok'
+					}
+				  ]
+				},
+				{
+					id: 'Fury',
+				  children: [
+					  {
+						id: 'AAAA',
+					  targets: ['Pasha']
+					}
+				  ]
+				}
+			  ]
+			}
+		  ]
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		function getInfo(object, global, current = []) {
+			console.log('current ', current)
+			const targets = findTargets(object)
+		  const currentArray = unicueArray(current, getArrayFromTree(object))
+		  console.log('currentArray ', currentArray)
+		  if(currentArray.length > 100 ) return; 
+		  const objNotFound = targets.filter(el => currentArray.some((obj) => obj.id == el) !== true);
+		  console.log('ObjectNotFound ', objNotFound)
+		  const objectsFromTargets = objNotFound.map(el => searchTree(global, el))
+			let result
+		  if(objectsFromTargets && objectsFromTargets.length > 0) {
+					  for(let i = 0; i < objectsFromTargets.length; i++) {
+						console.log(objectsFromTargets)
+					result = unicueArray(currentArray, getInfo(objectsFromTargets[i], global, currentArray))
+				}
+		  } else {
+			  result = currentArray
+		  }
+		  return result
+		}
+		
+		const nodes = getInfo(exampleTree.children[1], exampleTree)
+		const Targets = nodes.map(el => {
+			return findLinks(el)
+		}).flat()
+		
+		console.log('targets ', Targets)
+		
+		const allLinks = nodes.map(el =>  d3.hierarchy(el).links())
+		const converter = allLinks.flat().map( el => {
+			return {
+			  source: el.source.data.id,
+			  target: el.target.data.id  
+			}
+		})
+		const links = converter.concat(Targets)
+
+
+
+
+
+
+
+
+
+
+
+		graph.nodes[0].id = graph.nodes[0].id;
+		const myWidth = this.state.graphRef.current.clientWidth
+
+		var svg = d3.select('svg#graph'),
+			width = myWidth,
 			height = +svg.attr('height'),
 			g = svg.append('g');
 		svg
@@ -42,7 +223,7 @@ export class d3Graph extends Component {
 			.append('g')
 			.attr('class', 'links')
 			.selectAll('line')
-			.data(graph.links)
+			.data(links)
 			.enter()
 			.append('line')
 			.attr('stroke-width', function(d) {
@@ -52,12 +233,13 @@ export class d3Graph extends Component {
 
 		var node = g
 			.selectAll('circle.node')
-			.data(graph.nodes)
+			.data(nodes)
 			.enter()
 			.append('g')
 			.attr('class', 'node')
+			.on("mouseover", getViewNode)
 			.call(
-				d3
+				d3	
 					.drag()
 					.on('start', dragstarted)
 					.on('drag', dragged)
@@ -93,9 +275,9 @@ export class d3Graph extends Component {
 			})
 			.attr('font-family', 'Bree Serif');
 
-		simulation.nodes(graph.nodes).on('tick', ticked);
+		simulation.nodes(nodes).on('tick', ticked);
 
-		simulation.force('link').links(graph.links);
+		simulation.force('link').links(links);
 
 		function ticked() {
 			link
@@ -116,7 +298,11 @@ export class d3Graph extends Component {
 				return 'translate(' + d.x + ',' + d.y + ')';
 			});
 		}
-
+		function getViewNode(d) {
+			console.log( d3.hierarchy(nodes, (e) => e.children)    )
+			d3.selectAll('line')
+			.attr('stroke', e => '#ff0');
+		}
 		function dragstarted(d) {
 			if (!d3.event.active) simulation.alphaTarget(0.3).restart();
 			d.fx = d.x;
@@ -135,7 +321,12 @@ export class d3Graph extends Component {
 		}
 	}
 	render() {
-		return <div />;
+		return 	<svg id="graph"
+		ref={this.state.graphRef}
+		className="fullWidth"
+							viewBox="0 0 900 600"
+							height="600"
+						/>
 	}
 }
 

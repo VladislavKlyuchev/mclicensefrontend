@@ -3,11 +3,13 @@
 		{ "id": "Myriel" },
 		{ "id": "Napoleon" },
 		{ "id": "Mlle.Baptistine" },
-		{ "id": "Mll" }
+		{ "id": "Mll" },
+		{	"id": "test"}
 	],
 	"links": [
 		{ "source": "Napoleon", "target": "Myriel" },
 		{ "source": "Mlle.Baptistine", "target": "Myriel" },
-		{ "source": "Myriel", "target": "Mll" }
+		{ "source": "Myriel", "target": "Mll" },
+		{ "source": "Mll", "target": "test"}
 	]
 }

@@ -32,12 +32,7 @@ export class users extends Component {
 				alignItems="center">
 				<Grid item xs={5}>
 					<Paper className={classes.paper}>
-						<svg
-							id="test"
-							viewBox="0 0 900 600"
-							width={(window.screen.width / 12) * 5}
-							height="600"
-						/>
+						
 						<Graph />
 					</Paper>
 				</Grid>
