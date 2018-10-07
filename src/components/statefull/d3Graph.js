@@ -92,7 +92,8 @@ export class d3Graph extends Component {
 					id: 'Pasha',
 				  children: [
 					  {
-						id: 'Givi'
+						id: 'Givi',
+						targets: ['Katya']
 					},
 					{
 						id: 'Yes',
@@ -114,6 +115,10 @@ export class d3Graph extends Component {
 					},
 					{
 						id: 'Pok'
+					},
+					{
+						id: 'Jora',
+						targets: ['Givi', 'Katya']
 					}
 				  ]
 				},
@@ -213,10 +218,10 @@ export class d3Graph extends Component {
 					.id(function(d) {
 						return d.id;
 					})
-					.distance(100)
-					.strength(0.5)
+					.distance(200)
+					.strength(2.5)
 			)
-			.force('charge', d3.forceManyBody([100, 500]))
+			.force('charge', d3.forceManyBody([200, 500]).theta(0.6))
 			.force('center', d3.forceCenter(width / 2, height / 2));
 
 		var link = g
@@ -237,7 +242,7 @@ export class d3Graph extends Component {
 			.enter()
 			.append('g')
 			.attr('class', 'node')
-			.on("mouseover", getViewNode)
+		//	.on("mouseover", getViewNode)
 			.call(
 				d3	
 					.drag()
