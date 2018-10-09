@@ -2,10 +2,7 @@ import types from './actionType';
 
 const initialState = {
 	auth: true,
-	user: {
-		name: 'Goha'
-	},
-	context: false,
+	context: false
 };
 
 export default (state = initialState, action) => {
@@ -14,8 +11,10 @@ export default (state = initialState, action) => {
 			return { ...state, user: action.payload };
 		case types.SET_ERROR:
 			return { ...state, error: action.payload };
-		case types.OPEN_CONTEXT: 
-			return { ...state, context: true};	
+		case types.OPEN_CONTEXT:
+			return { ...state, context: true };
+		case types.CLOSE_CONTEXT:
+			return { ...state, context: false };
 		default:
 			return state;
 	}

@@ -1,3 +1,5 @@
+
+
 export function findTargets(objectT) {
     let array = [];
 	if(objectT.targets && objectT.targets.length > 0) {

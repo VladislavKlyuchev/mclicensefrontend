@@ -7,7 +7,7 @@ const main = () => {
 	return (
 		<Switch>
 			<Route exact path="/" component={Users} />
-			<Route path="/groups" component={Graph} />
+			<Route path="/groups" render={() => <h1>other</h1>} />
 			<Route path="/other" render={() => <h1>other</h1>} />
 		</Switch>
 	);

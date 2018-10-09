@@ -1,5 +1,5 @@
 export default function searchTree(element, matchingTitle) {
-	if (element.title == matchingTitle) {
+	if (element.id == matchingTitle) {
 		return element;
 	} else if (element.children != null) {
 		var i;
@@ -11,5 +11,3 @@ export default function searchTree(element, matchingTitle) {
 	}
 	return null;
 }
-
-////

@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Graph from '@components/statefull/d3Graph';
+import Graph from '@components/containers/GraphContainer';
+import Dialog from '@components/containers/DialogContainer';
 
 const styles = theme => ({
 	root: {
 		flexGrow: 1,
-		minHeight: '90vh'
+		minHeight: '90vh',
+		width: '100%'
 	},
 	paper: {
 		padding: theme.spacing.unit * 2,
@@ -19,9 +21,12 @@ const styles = theme => ({
 
 export class users extends Component {
 	static propTypes = {};
-
+	constructor(props) {
+		super(props);
+	}
 	render() {
 		const { classes } = this.props;
+		let Elem = <Graph />;
 		return (
 			<Grid
 				container
@@ -32,13 +37,14 @@ export class users extends Component {
 				alignItems="center">
 				<Grid item xs={5}>
 					<Paper className={classes.paper}>
-						
-						<Graph />
+						<div id="test" />
+						{Elem}
 					</Paper>
 				</Grid>
 				<Grid item xs={5}>
 					<Paper className={classes.paper}>xs=5</Paper>
 				</Grid>
+				<Dialog />
 			</Grid>
 		);
 	}
