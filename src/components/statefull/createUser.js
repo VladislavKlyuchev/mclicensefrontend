@@ -10,6 +10,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 const styles = theme => ({
 	root: {
 		display: 'flex',
@@ -22,6 +24,9 @@ const styles = theme => ({
 	button: {
 		marginTop: 8,
 		height: 56
+	},
+	checkbox: {
+		marginTop:13
 	},
 	textField: {
 		marginLeft: theme.spacing.unit,
@@ -40,10 +45,12 @@ export class createUser extends Component {
 		this.state = {
 			name: '',
 			group: '',
+			admin: false,
 			errorName: false,
 			errorGroup: false
 		};
 	}
+	onChangeAdmin = event => this.setState({admin: !this.state.admin});
 	onChangeName = event =>
 		this.setState({ name: event.target.value, errorName: false });
 	onChangeGroup = event =>
@@ -57,7 +64,7 @@ export class createUser extends Component {
 		} else if (group.length == 0) {
 			this.setState({ errorGroup: true });
 		} else {
-			const user = { id: this.state.name, children: [], targets: [] };
+			const user = { id: this.state.name, group, admin: this.state.admin};
 			this.props.createNewUser(user);
 			this.setState({ name: '', group: '' });
 		}
@@ -66,6 +73,7 @@ export class createUser extends Component {
 		const { classes, groups: allGroups } = this.props;
 		console.log(this.props);
 		console.log(allGroups);
+		console.log('admnin', this.state.admin)
 		const groups = allGroups.filter(group =>
 			group.users.some(el => el.id == this.props.user.id && el.admin)
 		);
@@ -114,7 +122,20 @@ export class createUser extends Component {
 						variant="outlined"
 					/>
 				</Grid>
-				<Grid item xs={4}>
+				<Grid item xs={1}>
+				
+		   <FormControlLabel className={classes.checkbox}
+          control={
+            <Checkbox
+          checked={this.state.admin}
+          onChange={this.onChangeAdmin}
+          value="GA"
+        />
+          }
+          label="GA"
+        />
+				</Grid>
+				<Grid item xs={3}>
 					<Button
 						fullWidth
 						className={classes.button}

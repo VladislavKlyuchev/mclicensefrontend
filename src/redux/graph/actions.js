@@ -40,8 +40,18 @@ export const createNewUser = object => {
 		const users = getState().graph.defaultTree;
 		const user = searchTree(users, object.parent);
 		if (user == null) alert('нет такого!');
-		user.children.push(object.user);
-		console.log(users);
+		const newUser = {
+			id: object.user.id,
+			targets: [],
+			children: [],
+		}
+		user.children.push(newUser);
+		const groupUser = {
+			name: object.user.id,
+			admin: object.user.admin,
+			group: object.user.group
+		}
+		dispatch(addUserToGroup(groupUser))
 		let result = {
 			type: types.SET_NEW_USER,
 			payload: users
@@ -49,3 +59,21 @@ export const createNewUser = object => {
 		return result;
 	};
 };
+
+export const addNewParent = object => {
+	return (dispatch, getState) => {
+		const tree = getState().graph.defaultTree;
+		const user = searchTree(tree, object.toUser);
+		user.targets.push(object.fromUser);
+		
+		const result = {
+			type: types.ADD_PARENT,
+			payload: tree,
+		}
+		return result
+	}
+} 
+
+export const addToGroup = event => {
+
+}

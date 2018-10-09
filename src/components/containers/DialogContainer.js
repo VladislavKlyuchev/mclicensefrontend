@@ -5,7 +5,8 @@ import { closeDialog } from '@redux/api/actions';
 import {
 	createNewGroup,
 	addUserToGroup,
-	createNewUser
+	createNewUser,
+	addNewParent
 } from '@redux/graph/actions';
 import { getUsers } from '@redux/graph/selectors';
 import Dialog from '@components/statefull/contextMenu';
@@ -29,7 +30,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	close: event => dispatch(closeDialog(event)),
 	createNewGroup: event => dispatch(createNewGroup(event)),
 	addUserToGroup: event => dispatch(addUserToGroup(event)),
-	createNewUser: event => dispatch(createNewUser(event))
+	createNewUser: event => dispatch(createNewUser(event)),
+	addNewParent: event => dispatch(addNewParent(event))
 });
 
 export default connect(

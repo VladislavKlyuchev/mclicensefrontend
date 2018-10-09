@@ -117,6 +117,9 @@ function test(svg, nodes, links, myWidth, openContext, tree) {
 		d3.selectAll('line').attr('stroke', e => {
 			return nodes.some(el => el.id == e.source.id) ? '#000' : '#ccc';
 		});
+		d3.selectAll('text').style('fill-opacity', e => {
+			return nodes.some(el => el.id == e.id) ?  '1' : '0.1';
+		}); 
 	}
 	function getViewDefault(d) {
 		d3.selectAll('circle').style('fill-opacity', e => {
@@ -125,6 +128,9 @@ function test(svg, nodes, links, myWidth, openContext, tree) {
 		d3.selectAll('line').attr('stroke', e => {
 			return '#424242';
 		});
+		d3.selectAll('text').style('fill-opacity', e => {
+			return '1';
+		}); 
 	}
 	function clickNode(d) {
 		openContext(d);

@@ -22,6 +22,8 @@ export default (state = initialState, action) => {
 			return { ...state, current: action.payload };
 		case types.SET_GROUP:
 			return { ...state, groups: action.payload };
+		case types.ADD_PARENT: 
+			return { ...state, defaultTree: action.payload}	
 		case types.SET_TO_GROUP:
 			return { ...state, groups: action.payload };
 		default:

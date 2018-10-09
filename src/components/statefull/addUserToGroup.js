@@ -10,6 +10,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox'
+import { addToGroup } from '../../redux/graph/actions';
 const styles = theme => ({
 	container: {
 		display: 'flex',
@@ -37,47 +40,93 @@ const styles = theme => ({
 		width: 200
 	}
 });
-export class addParent extends Component {
+export class addUserToGroup extends Component {
 	static propTypes = {};
 	constructor(props) {
 		super(props);
 		this.state = {
-			user: '',
-			userTo: '',
+			group: '',
+            user: '',
+            admin: false,
 			error: false,
-			errorTwo: false
+			error2: false
 		};
 	}
-	onChangeUser = event => this.setState({user: event.target.value, error: false});
-	onChangeUserTo = event => this.setState({userTo: event.target.value, errorTwo: false});
+	onChangeGroup = event => {
+        this.setState({group: event.target.value, error: false});
+    } 
+    onChangeAdmin = event => {
+        this.setState({admin: this.state.admin})
+    }
+	onChangeUser = event => this.setState({user: event.target.value, error2: false});
 	submit = event => {
-		
-		if (!this.state.userTo.length && !this.state.user ) {
-			this.setState({ error: true, errorTwo: true });
-		} else if(!this.state.userTo.length) {
-			this.setState({ errorTwo: true });
+		if ( !this.state.group.length && !this.state.user ) {
+            this.setState({ error: true, error2: true });
+			
+		} else if(!this.state.group.length) {
+			this.setState({ error2: true });
 		} else if(!this.state.user.length) {
 			this.setState({ error: true });
 		} else {
 			const options = {
-				fromUser: this.state.user,
-				toUser: this.state.userTo
+				group: this.state.group,
+                user: this.state.user,
+                admin: this.state.admin
 			}
 
-			this.props.addParent(options)
+			this.props.addUserToGroup(options)
 		}
 	};
 	render() {
-		const { classes, users: allUsers, user } = this.props;
-		const {user:userOne, userTo} = this.state;
-		const users = allUsers.filter(us => user.id !== us.id);
-		console.log('userOne',userOne)
-		const usersTo = users.filter(us => us.id !== userOne);
+		const { classes, users: allUsers, user, groups } = this.props;
+        const {group, user:currentUser } = this.state;
+        console.log('groups',groups)
+        const filterGroups = groups.filter((group) => group.users.some(u => u.id == user.id && u.admin))
+        let currentGroup, users,filterUsers = false
+        if(group) {
+             currentGroup = filterGroups.find(g => g.name == group);
+             users = allUsers.filter(us => user !== us.id);
+             console.log('currentGroup', currentGroup)
+             console.log('users', users)
+             filterUsers = users.filter(us => !currentGroup.users.some(user => user.id == us.id));
+             console.log('filter', filterUsers)
+        }
+        const usersMap = filterUsers || allUsers
 		return (
 			<div>
 				<form className={classes.container} noValidate autoComplete="off">
 					<Grid container spacing={24}>
-						<Grid item xs={5}>
+						<Grid item xs={4}>
+							<FormControl variant="outlined" className={classes.formControl}>
+								<InputLabel
+									ref={ref => {
+										this.labelRef = ReactDOM.findDOMNode(ref);
+									}}
+									htmlFor="outlined-age-simple">
+									Groups
+								</InputLabel>
+								<Select
+									value={group}
+									onChange={this.onChangeGroup}
+									error={this.state.error}
+									className={classes.formControl}
+									input={
+										<OutlinedInput
+											labelWidth={this.labelRef ? this.labelRef.offsetWidth : 0}
+											name="age"
+											fullWidth
+											id="outlined-age-simple"
+										/>
+									}>
+									{filterGroups.map(group => (
+										<MenuItem key={group.name} value={group.name}>
+											{group.name}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Grid>
+						<Grid item xs={4}>
 							<FormControl variant="outlined" className={classes.formControl}>
 								<InputLabel
 									ref={ref => {
@@ -89,7 +138,8 @@ export class addParent extends Component {
 								<Select
 									value={this.state.user}
 									onChange={this.onChangeUser}
-									error={this.state.error}
+                                    error={this.state.error2}
+                                    disabled={!group}
 									className={classes.formControl}
 									input={
 										<OutlinedInput
@@ -99,7 +149,7 @@ export class addParent extends Component {
 											id="outlined-age-simple"
 										/>
 									}>
-									{users.map(group => (
+									{usersMap.map(group => (
 										<MenuItem key={group.id} value={group.id}>
 											{group.id}
 										</MenuItem>
@@ -107,37 +157,20 @@ export class addParent extends Component {
 								</Select>
 							</FormControl>
 						</Grid>
-						<Grid item xs={5}>
-							<FormControl variant="outlined" className={classes.formControl}>
-								<InputLabel
-									ref={ref => {
-										this.labelRef = ReactDOM.findDOMNode(ref);
-									}}
-									htmlFor="outlined-age-simple">
-									Users to
-								</InputLabel>
-								<Select
-									value={this.state.userTo}
-									onChange={this.onChangeUserTo}
-									error={this.state.errorTwo}
-									className={classes.formControl}
-									input={
-										<OutlinedInput
-											labelWidth={this.labelRef ? this.labelRef.offsetWidth : 0}
-											name="age"
-											fullWidth
-											id="outlined-age-simple"
-										/>
-									}>
-									{usersTo.map(group => (
-										<MenuItem key={group.id} value={group.id}>
-											{group.id}
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
-						</Grid>
-						<Grid item xs={2}>
+                        <Grid item xs={1}>
+				
+		   <FormControlLabel className={classes.checkbox}
+          control={
+            <Checkbox
+          checked={this.state.admin}
+          onChange={this.onChangeAdmin}
+          value="GA"
+        />
+          }
+          label="GA"
+        />
+				</Grid>
+						<Grid item xs={3}>
 							<Button
 								fullWidth
 								className={classes.button}
@@ -153,4 +186,4 @@ export class addParent extends Component {
 	}
 }
 
-export default withStyles(styles)(addParent);
+export default withStyles(styles)(addUserToGroup);

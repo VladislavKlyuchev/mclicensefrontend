@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Graph from '@components/containers/GraphContainer';
 import Dialog from '@components/containers/DialogContainer';
+import Groups from '@components/containers/GroupContainer'
 
 const styles = theme => ({
 	root: {
@@ -42,7 +43,9 @@ export class users extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={5}>
-					<Paper className={classes.paper}>xs=5</Paper>
+					<Paper className={classes.paper}>
+					<Groups></Groups>
+					</Paper>
 				</Grid>
 				<Dialog />
 			</Grid>
