@@ -19,6 +19,7 @@ export function converterToGraph(state) {
 	});
 
 	const links = converter.concat(targets);
+	console.log('links', links.length);
 	return { nodes, links };
 }
 

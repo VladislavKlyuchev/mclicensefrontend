@@ -11,7 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox'
+import Checkbox from '@material-ui/core/Checkbox';
 import { addToGroup } from '../../redux/graph/actions';
 const styles = theme => ({
 	container: {
@@ -33,6 +33,9 @@ const styles = theme => ({
 		marginLeft: theme.spacing.unit,
 		marginRight: theme.spacing.unit
 	},
+	checkbox: {
+		marginTop: 13
+	},
 	dense: {
 		marginTop: 16
 	},
@@ -46,52 +49,58 @@ export class addUserToGroup extends Component {
 		super(props);
 		this.state = {
 			group: '',
-            user: '',
-            admin: false,
+			user: '',
+			admin: false,
 			error: false,
 			error2: false
 		};
 	}
 	onChangeGroup = event => {
-        this.setState({group: event.target.value, error: false});
-    } 
-    onChangeAdmin = event => {
-        this.setState({admin: this.state.admin})
-    }
-	onChangeUser = event => this.setState({user: event.target.value, error2: false});
+		this.setState({ group: event.target.value, error: false });
+	};
+	onChangeAdmin = event => {
+		this.setState({ admin: !this.state.admin });
+	};
+	onChangeUser = event =>
+		this.setState({ user: event.target.value, error2: false });
 	submit = event => {
-		if ( !this.state.group.length && !this.state.user ) {
-            this.setState({ error: true, error2: true });
-			
-		} else if(!this.state.group.length) {
+		if (!this.state.group.length && !this.state.user) {
+			this.setState({ error: true, error2: true });
+		} else if (!this.state.group.length) {
 			this.setState({ error2: true });
-		} else if(!this.state.user.length) {
+		} else if (!this.state.user.length) {
 			this.setState({ error: true });
 		} else {
 			const options = {
 				group: this.state.group,
-                user: this.state.user,
-                admin: this.state.admin
-			}
+				name: this.state.user,
+				admin: this.state.admin
+			};
 
-			this.props.addUserToGroup(options)
+			this.props.addUserToGroup(options);
 		}
 	};
 	render() {
 		const { classes, users: allUsers, user, groups } = this.props;
-        const {group, user:currentUser } = this.state;
-        console.log('groups',groups)
-        const filterGroups = groups.filter((group) => group.users.some(u => u.id == user.id && u.admin))
-        let currentGroup, users,filterUsers = false
-        if(group) {
-             currentGroup = filterGroups.find(g => g.name == group);
-             users = allUsers.filter(us => user !== us.id);
-             console.log('currentGroup', currentGroup)
-             console.log('users', users)
-             filterUsers = users.filter(us => !currentGroup.users.some(user => user.id == us.id));
-             console.log('filter', filterUsers)
-        }
-        const usersMap = filterUsers || allUsers
+		const { group, user: currentUser } = this.state;
+		console.log('groups', groups);
+		const filterGroups = groups.filter(group =>
+			group.users.some(u => u.id == user.id && u.admin)
+		);
+		let currentGroup,
+			users,
+			filterUsers = false;
+		if (group) {
+			currentGroup = filterGroups.find(g => g.name == group);
+			users = allUsers.filter(us => user !== us.id);
+			console.log('currentGroup', currentGroup);
+			console.log('users', users);
+			filterUsers = users.filter(
+				us => !currentGroup.users.some(user => user.id == us.id)
+			);
+			console.log('filter', filterUsers);
+		}
+		const usersMap = filterUsers || allUsers;
 		return (
 			<div>
 				<form className={classes.container} noValidate autoComplete="off">
@@ -138,8 +147,8 @@ export class addUserToGroup extends Component {
 								<Select
 									value={this.state.user}
 									onChange={this.onChangeUser}
-                                    error={this.state.error2}
-                                    disabled={!group}
+									error={this.state.error2}
+									disabled={!group}
 									className={classes.formControl}
 									input={
 										<OutlinedInput
@@ -157,19 +166,19 @@ export class addUserToGroup extends Component {
 								</Select>
 							</FormControl>
 						</Grid>
-                        <Grid item xs={1}>
-				
-		   <FormControlLabel className={classes.checkbox}
-          control={
-            <Checkbox
-          checked={this.state.admin}
-          onChange={this.onChangeAdmin}
-          value="GA"
-        />
-          }
-          label="GA"
-        />
-				</Grid>
+						<Grid item xs={1}>
+							<FormControlLabel
+								className={classes.checkbox}
+								control={
+									<Checkbox
+										checked={this.state.admin}
+										onChange={this.onChangeAdmin}
+										value="GA"
+									/>
+								}
+								label="GA"
+							/>
+						</Grid>
 						<Grid item xs={3}>
 							<Button
 								fullWidth

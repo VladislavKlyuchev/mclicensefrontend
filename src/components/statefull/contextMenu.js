@@ -18,7 +18,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import CreateGroup from '@components/statefull/createGroup';
 import CreateUser from '@components/statefull/createUser';
 import AddParent from '@components/statefull/addParent';
-import AddUserToGroup from '@components/statefull/addUserToGroup'
+import AddUserToGroup from '@components/statefull/addUserToGroup';
 import getInfo from '@/functions/getInfo';
 class SimpleDialog extends React.Component {
 	constructor(props) {
@@ -55,14 +55,15 @@ class SimpleDialog extends React.Component {
 		this.setState({ createGroup: false });
 	};
 	openAddParent = event => this.setState({ addParent: true });
-	addNewParent  = event => {
-		this.props.addNewParent(event)
-		this.setState({addParent: false})
-	}
-	openAddUserToGroup = event => this.setState({ addToGroup:true})
+	addNewParent = event => {
+		this.props.addNewParent(event);
+		this.setState({ addParent: false });
+	};
+	openAddUserToGroup = event => this.setState({ addToGroup: true });
 	handleAddUserToGroup = event => {
-
-	}
+		this.props.addUserToGroup(event);
+		this.setState({ addToGroup: false });
+	};
 	close = event => {
 		this.setState({
 			createUser: false,
@@ -87,7 +88,7 @@ class SimpleDialog extends React.Component {
 					<ListItem button onClick={this.openUserCreate}>
 						<ListItemText primary="Create user" />
 					</ListItem>
-					<ListItem button onClick={this.openAddParent} >
+					<ListItem button onClick={this.openAddParent}>
 						<ListItemText primary="Add parent" />
 					</ListItem>
 					<ListItem button onClick={this.openAddUserToGroup}>
@@ -106,9 +107,22 @@ class SimpleDialog extends React.Component {
 				/>
 			);
 		} else if (addParent) {
-			content = <AddParent users={users} user={this.props.data} addParent={this.addNewParent} />;
-		} else if(addToGroup) {
-			content = <AddUserToGroup groups={this.props.groups} users={users} user={this.props.data} addUserToGroup={this.handleAddUserToGroup}></AddUserToGroup>
+			content = (
+				<AddParent
+					users={users}
+					user={this.props.data}
+					addParent={this.addNewParent}
+				/>
+			);
+		} else if (addToGroup) {
+			content = (
+				<AddUserToGroup
+					groups={this.props.groups}
+					users={users}
+					user={this.props.data}
+					addUserToGroup={this.handleAddUserToGroup}
+				/>
+			);
 		}
 
 		return (

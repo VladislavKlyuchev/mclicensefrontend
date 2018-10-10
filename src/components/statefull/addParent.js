@@ -48,31 +48,37 @@ export class addParent extends Component {
 			errorTwo: false
 		};
 	}
-	onChangeUser = event => this.setState({user: event.target.value, error: false});
-	onChangeUserTo = event => this.setState({userTo: event.target.value, errorTwo: false});
+	onChangeUser = event =>
+		this.setState({ user: event.target.value, error: false });
+	onChangeUserTo = event =>
+		this.setState({ userTo: event.target.value, errorTwo: false });
 	submit = event => {
-		
-		if (!this.state.userTo.length && !this.state.user ) {
+		if (!this.state.userTo.length && !this.state.user) {
 			this.setState({ error: true, errorTwo: true });
-		} else if(!this.state.userTo.length) {
+		} else if (!this.state.userTo.length) {
 			this.setState({ errorTwo: true });
-		} else if(!this.state.user.length) {
+		} else if (!this.state.user.length) {
 			this.setState({ error: true });
 		} else {
 			const options = {
 				fromUser: this.state.user,
 				toUser: this.state.userTo
-			}
+			};
 
-			this.props.addParent(options)
+			this.props.addParent(options);
 		}
 	};
 	render() {
 		const { classes, users: allUsers, user } = this.props;
-		const {user:userOne, userTo} = this.state;
+		const { user: userOne, userTo } = this.state;
 		const users = allUsers.filter(us => user.id !== us.id);
-		console.log('userOne',userOne)
-		const usersTo = users.filter(us => us.id !== userOne);
+		console.log('userOne', userOne);
+		const usersTo = allUsers.filter(
+			us =>
+				us.id !== userOne &&
+				!us.targets.some(u => u == userOne) &&
+				!us.children.some(u => u.id == userOne)
+		);
 		return (
 			<div>
 				<form className={classes.container} noValidate autoComplete="off">

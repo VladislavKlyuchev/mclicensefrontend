@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { openDialog } from '@redux/api/actions';
+import { setCurrent } from '@redux/graph/actions';
 import Graph from '@components/statefull/d3Graph';
 import { converterToGraph } from '@redux/graph/selectors';
 export class GraphContainer extends Component {
@@ -13,12 +14,13 @@ export class GraphContainer extends Component {
 }
 
 const mapStateToProps = state => ({
-	data: converterToGraph(state),
-	tree: state.graph.defaultTree
+	data: Object.assign({}, converterToGraph(state)),
+	tree: Object.assign({}, state.graph.defaultTree)
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	openContext: event => dispatch(openDialog(event))
+	openContext: event => dispatch(openDialog(event)),
+	setCurrent: event => dispatch(setCurrent(event))
 });
 export default connect(
 	mapStateToProps,

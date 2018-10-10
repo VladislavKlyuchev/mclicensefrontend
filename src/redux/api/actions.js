@@ -8,18 +8,14 @@ export const auth = object => ({
 	type: types.SET_USER,
 	payload: object
 });
-export const setCurrentData = object => ({
-	type: types.SET_CURRENT_DATA,
-	payload: object
-});
 export const openDialog = object => {
 	const open = {
 		type: types.OPEN_CONTEXT,
 		payload: true
 	};
+	console.log(object);
 	return dispatch => {
 		dispatch(open);
-		dispatch(setCurrentData(object));
 	};
 };
 

@@ -5,7 +5,16 @@ import * as d3 from 'd3';
 import graph from './example.json';
 import getInfo from '@/functions/getInfo';
 var go;
-function test(svg, nodes, links, myWidth, openContext, tree) {
+function test(
+	svg,
+	nodes,
+	links,
+	myWidth,
+	openContext,
+	tree,
+	setCurrentDefault,
+	current
+) {
 	svg.selectAll('*').remove();
 
 	var width = myWidth,
@@ -110,6 +119,7 @@ function test(svg, nodes, links, myWidth, openContext, tree) {
 		});
 	}
 	function getViewNode(d) {
+		setCurrentDefault(d);
 		const nodes = getInfo(d, tree);
 		d3.selectAll('circle').style('fill-opacity', e => {
 			return nodes.some(el => el.id == e.id) ? '1' : '0.1';
@@ -118,8 +128,8 @@ function test(svg, nodes, links, myWidth, openContext, tree) {
 			return nodes.some(el => el.id == e.source.id) ? '#000' : '#ccc';
 		});
 		d3.selectAll('text').style('fill-opacity', e => {
-			return nodes.some(el => el.id == e.id) ?  '1' : '0.1';
-		}); 
+			return nodes.some(el => el.id == e.id) ? '1' : '0.1';
+		});
 	}
 	function getViewDefault(d) {
 		d3.selectAll('circle').style('fill-opacity', e => {
@@ -130,7 +140,7 @@ function test(svg, nodes, links, myWidth, openContext, tree) {
 		});
 		d3.selectAll('text').style('fill-opacity', e => {
 			return '1';
-		}); 
+		});
 	}
 	function clickNode(d) {
 		openContext(d);
@@ -159,32 +169,44 @@ export class d3Graph extends Component {
 		super(props);
 		this.state = {
 			graph: null,
-			width: null
+			width: null,
+			nodes: 0,
+			links: 0
 		};
 	}
 	componentDidMount() {
-		console.log('AAAA', this.state.graph);
 		const {
 			data: { nodes, links },
 			tree,
-			openContext
+			openContext,
+			setCurrent
 		} = this.props;
 		const myWidth = 700;
 		const svg = d3.select(go);
-		console.log('nodes', nodes);
-		test(svg, nodes, links, myWidth, openContext, tree);
+		test(svg, nodes, links, myWidth, openContext, tree, setCurrent);
+	}
+	shouldComponentUpdate(nextProps, nextState) {
+		if (
+			nextProps.data.nodes.length == this.state.nodes &&
+			nextProps.data.links.length == this.state.links
+		) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	render() {
 		if (go && go !== null) {
 			const {
 				data: { nodes, links },
 				tree,
-				openContext
+				openContext,
+				setCurrent
 			} = this.props;
 			const myWidth = 700;
 			const svg = d3.select(go);
-			console.log('nodes', nodes);
-			test(svg, nodes, links, myWidth, openContext, tree);
+			this.setState({ nodes: nodes.length, links: links.length });
+			test(svg, nodes, links, myWidth, openContext, tree, setCurrent);
 		}
 		return (
 			<svg

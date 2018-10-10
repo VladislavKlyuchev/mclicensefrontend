@@ -51,13 +51,6 @@ const appBar = props => {
 						color="inherit">
 						Users
 					</Button>
-					<Button
-						component={Link}
-						to="/groups"
-						className={classes.button}
-						color="inherit">
-						Groups
-					</Button>
 				</Toolbar>
 			</AppBar>
 		</div>

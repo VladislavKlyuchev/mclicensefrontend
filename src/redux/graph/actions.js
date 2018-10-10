@@ -12,8 +12,10 @@ export const createNewGroup = object => {
 
 		const result = {
 			type: types.SET_GROUP,
-			payload: groups
+			payload: groups.slice(0)
 		};
+		console.log('state', getState());
+		console.log('fsdfsdfsdfsdf');
 		return result;
 	};
 };
@@ -29,7 +31,7 @@ export const addUserToGroup = object => {
 
 		const result = {
 			type: types.SET_TO_GROUP,
-			payload: groups
+			payload: groups.slice(0)
 		};
 		return result;
 	};
@@ -43,15 +45,15 @@ export const createNewUser = object => {
 		const newUser = {
 			id: object.user.id,
 			targets: [],
-			children: [],
-		}
+			children: []
+		};
 		user.children.push(newUser);
 		const groupUser = {
 			name: object.user.id,
 			admin: object.user.admin,
 			group: object.user.group
-		}
-		dispatch(addUserToGroup(groupUser))
+		};
+		dispatch(addUserToGroup(groupUser));
 		let result = {
 			type: types.SET_NEW_USER,
 			payload: users
@@ -65,15 +67,31 @@ export const addNewParent = object => {
 		const tree = getState().graph.defaultTree;
 		const user = searchTree(tree, object.toUser);
 		user.targets.push(object.fromUser);
-		
+
 		const result = {
 			type: types.ADD_PARENT,
-			payload: tree,
+			payload: tree
+		};
+		return result;
+	};
+};
+
+export const setCurrent = event => {
+	return (dispatch, getState) => {
+        
+		const prevCurrent = getState().graph.current;
+
+		if (prevCurrent && prevCurrent.id == event.id) {
+			return;
+		} else {
+			const result = {
+				type: types.SET_CURRENT_DATA,
+				payload: event
+			};
+			dispatch(setCurrentUser(result));
 		}
-		return result
-	}
-} 
-
-export const addToGroup = event => {
-
-}
+	};
+};
+export const setCurrentUser = object => {
+	return object;
+};

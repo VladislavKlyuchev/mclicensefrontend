@@ -1,25 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import Groups from '@components/statefull/Group'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import Groups from '@components/statefull/Group';
 export class GroupContainer extends Component {
-  static propTypes = {
-  }
+	static propTypes = {};
 
-  render() {
-    return (
-      <Groups {...this.props}></Groups>
-    )
-  }
+	render() {
+		return <Groups {...this.props} />;
+	}
 }
 
-const mapStateToProps = (state) => ({
-    groups: state.graph.groups,
-    current: state.graph.current
-})
+const mapStateToProps = state => ({
+	groups: [].concat(state.graph.groups),
+	current: Object.assign({}, state.graph.current)
+});
 
-const mapDispatchToProps = {
-  
-}
+const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupContainer)
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(GroupContainer);

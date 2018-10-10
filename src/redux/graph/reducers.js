@@ -11,22 +11,27 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
+	console.log(action);
 	switch (action.type) {
 		case 'ADD_NODE':
 			return { ...state };
 		case types.SELECT_ALL_GROUPS:
-			return state.groups;
+			return Object.assign({}, state.groups);
+		case types.SELECT_ALL_TREE:
+			return Object.assign({}, state.defaultTree);
+		case types.SELECT_CURRENT:
+			return Object.assign({}, state.current);
 		case types.SET_NEW_USER:
-			return { ...state, defaultTree: action.payload };
+			return Object.assign({}, state, (state.defaultTree = action.payload));
 		case types.SET_CURRENT_DATA:
-			return { ...state, current: action.payload };
+			return Object.assign({}, state, (state.current = action.payload));
 		case types.SET_GROUP:
-			return { ...state, groups: action.payload };
-		case types.ADD_PARENT: 
-			return { ...state, defaultTree: action.payload}	
+			return Object.assign({}, state, (state.groups = action.payload));
+		case types.ADD_PARENT:
+			return Object.assign({}, state, (state.defaultTree = action.payload));
 		case types.SET_TO_GROUP:
-			return { ...state, groups: action.payload };
+			return Object.assign({}, state, (state.groups = action.payload));
 		default:
-			return state;
+			return Object.assign({}, state);
 	}
 };
